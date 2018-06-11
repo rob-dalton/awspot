@@ -1,8 +1,42 @@
 #!/bin/bash
+# TODO: Pass specification file, user data script, spot price as args
+
+# loop through args
+while :; do
+    # pass each arg through case statement
+    case $1 in 
+        -s|--specification)
+            if [ "$2" ]; then
+                launch_spec_file=$2
+            shift
+            else
+                die 'ERROR: "--specification" requires a non-empty option argument.'
+            fi
+        ;;
+        -u|--userdata)
+            if [ "$2" ]; then
+                user_data_file=$2
+            shift
+            else
+                die 'ERROR: "--userdata" requires a non-empty option argument.'
+            fi
+        ;;
+        -p|--price)
+            if [ "$2" ]; then
+                spot_price=$2
+            shift
+            else
+                die 'ERROR: "--price" requires a non-empty option argument.'
+            fi
+        ;;
+        *) break
+    esac
+    shift
+done
 
 # convert UserData script file to base64, add to launch specifications
-user_data="$(cat startup-scripts/subjective_objective.sh | base64)"
-launch_specs="$(jq ".UserData=\"$user_data\"" specifications/ec2_spot_default.json)"
+user_data="$(cat $user_data_file | base64)"
+launch_specs="$(jq ".UserData=\"$user_data\"" $launch_spec_file)"
 
 # setup request logfile name
 log_file="instance-requests/$(date '+%y%m%d-%H%M%S').json"
@@ -10,7 +44,7 @@ log_file="instance-requests/$(date '+%y%m%d-%H%M%S').json"
 # request spot instance
 aws ec2 request-spot-instances --instance-count 1 \
                                --type "one-time" \
-                               --spot-price "0.070" \
+                               --spot-price "$spot_price" \
                                --launch-specification "$launch_specs" > $log_file
 
 # get instance id
