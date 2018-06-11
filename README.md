@@ -12,6 +12,8 @@ if [ -f ~/.aws_manager ]; then
 fi
 ```
 
+Ensure the environment variable `$AWS_PRIVATE_KEY` is set to the desired .pem key file. 
+
 ## Usage
 Running the command `bash launch_ec2_spot_instance.sh -s <path-to-spec-file> -u <path-to-startup-script> -p <max-bid-price>` will request a spot instance with the specifications defined by the passed args. It will also create an alias to ssh into your newly created instance. 
 
