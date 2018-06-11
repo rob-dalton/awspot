@@ -1,6 +1,6 @@
 {
   "ImageId": "ami-bdf289c5",
-  "KeyName": "ec2_rob",
+  "KeyName": "ec2_default",
   "SecurityGroupIds": [ "sg-a60747df" ],
   "InstanceType": "t2.large",
   "Placement": {
