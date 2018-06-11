@@ -1,5 +1,10 @@
 #!/bin/bash
-# TODO: Pass specification file, user data script, spot price as args
+
+# exit function
+die() {
+    printf '%s\n' "$1" >&2
+    exit 1
+}
 
 # loop through args
 while :; do
@@ -47,7 +52,7 @@ aws ec2 request-spot-instances --instance-count 1 \
                                --spot-price "$spot_price" \
                                --launch-specification "$launch_specs" > $log_file
 
-# get instance id
+# get instance id, strip quotes from string
 request_id="$(cat $log_file | jq '.SpotInstanceRequests[0] .SpotInstanceRequestId')"
 request_state=$(aws ec2 describe-spot-instance-requests \
                 --filters Name=spot-instance-request-id,Values=[$request_id])
@@ -60,11 +65,11 @@ until [ -n $instance_id ]; do
     sleep 5s
 done
 
-# get instance DNS
+# get instance DNS, strip quotes from string
 instance_description=$(aws ec2 describe-instances \
                        --filters Name=instance-id,Values=[$instance_id])
 instance_dns=$(echo $instance_description | jq '.Reservations[0] .Instances[0] .PublicDnsName' | sed -e 's/^"//' -e 's/"$//')
 
 # add bash alias to ssh into instance 
 # TODO: Add option to manage instances by name
-echo "alias ssh_ec2_${instance_id}='ssh -i $AWS_PRIVATE_KEY ec2-user@${instance_dns}" > ~/.aws_manager
+echo "alias ssh_ec2_${instance_id}='ssh -i $AWS_PRIVATE_KEY ec2-user@${instance_dns}" >> ~/.aws_manager
