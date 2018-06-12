@@ -76,7 +76,7 @@ while [ $instance_id == "null" ]; do
     # run spinner
     for i in `seq 1 30`; do
         j=$(( (j+1) %4 ))
-        printf "\rWaiting for request to be fulfilled...${spin:$j:1}"
+        printf "\rWaiting for request to be fulfilled...${spin:$j:1}\n"
         sleep .1
     done
     instance_id=$(get_instance_id)
@@ -95,4 +95,4 @@ ssh_alias="alias ssh_ec2_${instance_id}='ssh -i $AWS_PRIVATE_KEY ec2-user@${inst
 echo  $ssh_alias >> ~/.aws_manager
 source ~/.bash_profile
 
-printf "SSH into instance with command:\n\n$ssh_alias"
+printf "SSH into instance with command:\n$ssh_alias\n"
