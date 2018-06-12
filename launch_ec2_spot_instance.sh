@@ -76,12 +76,12 @@ while [ $instance_id == "null" ]; do
     # run spinner
     for i in `seq 1 30`; do
         j=$(( (j+1) %4 ))
-        printf "\rWaiting for request to be fulfilled...${spin:$j:1}\n"
+        printf "\rWaiting for request to be fulfilled...${spin:$j:1}"
         sleep .1
     done
     instance_id=$(get_instance_id)
 done
-printf "Request fulfilled.\nInstance id:\t$instance_id\n"
+printf "\nRequest fulfilled.\nInstance id:\t$instance_id\n"
 
 # get instance DNS, strip quotes from string
 instance_description=$(aws ec2 describe-instances \
