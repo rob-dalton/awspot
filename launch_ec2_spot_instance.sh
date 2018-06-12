@@ -47,29 +47,52 @@ launch_specs="$(jq ".UserData=\"$user_data\"" $launch_spec_file)"
 log_file="instance-requests/$(date '+%y%m%d-%H%M%S').json"
 
 # request spot instance
+printf "Making instance request...\n"
 aws ec2 request-spot-instances --instance-count 1 \
                                --type "one-time" \
                                --spot-price "$spot_price" \
                                --launch-specification "$launch_specs" > $log_file
 
 # get instance id, strip quotes from string
-request_id="$(cat $log_file | jq '.SpotInstanceRequests[0] .SpotInstanceRequestId')"
-request_state=$(aws ec2 describe-spot-instance-requests \
-                --filters Name=spot-instance-request-id,Values=[$request_id])
-instance_id=$(echo $request_state | jq '.SpotInstanceRequests[0] .InstanceId' | sed -e 's/^"//' -e 's/"$//')
+request_id=$(cat $log_file | jq '.SpotInstanceRequests[0] .SpotInstanceRequestId' | sed -e 's/^"//' -e 's/"$//')
+printf "Request $request_id submitted.\n"
 
-# check if instance created every 5s
+function get_request_state {
+    aws ec2 describe-spot-instance-requests \
+            --filters Name=spot-instance-request-id,Values=[$request_id]
+}
+
+function get_instance_id {
+    echo $(get_request_state) | \
+    jq '.SpotInstanceRequests[0] .InstanceId' | \
+    sed -e 's/^"//' -e 's/"$//'
+}
+
+# check if instance created every 3s
 # TODO: Stop script if request is terminated
-until [ -n $instance_id ]; do
-    # TODO: Add wait spinner
-    sleep 5s
+spin="/-\|"
+instance_id=$(get_instance_id)
+while [ $instance_id == "null" ]; do
+    # run spinner
+    for i in `seq 1 30`; do
+        j=$(( (j+1) %4 ))
+        printf "\rWaiting for request to be fulfilled...${spin:$j:1}"
+        sleep .1
+    done
+    instance_id=$(get_instance_id)
 done
+printf "Request fulfilled.\nInstance id:\t$instance_id\n"
 
 # get instance DNS, strip quotes from string
 instance_description=$(aws ec2 describe-instances \
                        --filters Name=instance-id,Values=[$instance_id])
 instance_dns=$(echo $instance_description | jq '.Reservations[0] .Instances[0] .PublicDnsName' | sed -e 's/^"//' -e 's/"$//')
+printf "Instance DNS:\t$instance_dns\n"
 
 # add bash alias to ssh into instance 
 # TODO: Add option to manage instances by name
-echo "alias ssh_ec2_${instance_id}='ssh -i $AWS_PRIVATE_KEY ec2-user@${instance_dns}" >> ~/.aws_manager
+ssh_alias="alias ssh_ec2_${instance_id}='ssh -i $AWS_PRIVATE_KEY ec2-user@${instance_dns}'"
+echo  $ssh_alias >> ~/.aws_manager
+source ~/.bash_profile
+
+printf "SSH into instance with command:\n\n$ssh_alias"
