@@ -54,7 +54,7 @@ aws ec2 request-spot-instances --instance-count 1 \
                                --launch-specification "$launch_specs" > $log_file
 
 # get instance id, strip quotes from string
-request_id=$(cat $log_file | jq '.SpotInstanceRequests[0] .SpotInstanceRequestId' | sed -e 's/^"//' -e 's/"$//')
+request_id=$(cat $log_file | jq -r '.SpotInstanceRequests[0] .SpotInstanceRequestId')
 printf "Request submitted. Spot Instance Request ID:\t$request_id\n"
 
 function get_request_state {
@@ -63,9 +63,8 @@ function get_request_state {
 }
 
 function get_instance_id {
-    echo $(get_request_state) | \
-    jq '.SpotInstanceRequests[0] .InstanceId' | \
-    sed -e 's/^"//' -e 's/"$//'
+    get_request_state | \
+    jq -r '.SpotInstanceRequests[0] .InstanceId'
 }
 
 # check if instance created every 3s
@@ -74,7 +73,7 @@ spin="/-\|"
 instance_id=$(get_instance_id)
 while [ $instance_id == "null" ]; do
     # run spinner
-    for i in `seq 1 30`; do
+    for ((i=0; i<30; i++)); do
         j=$(( (j+1) %4 ))
         printf "\rWaiting for request to be fulfilled...${spin:$j:1}"
         sleep .1
@@ -86,7 +85,7 @@ printf "\nRequest fulfilled.\n\nInstance ID:\t$instance_id\n"
 # get instance DNS, strip quotes from string
 instance_description=$(aws ec2 describe-instances \
                        --filters Name=instance-id,Values=[$instance_id])
-instance_dns=$(echo $instance_description | jq '.Reservations[0] .Instances[0] .PublicDnsName' | sed -e 's/^"//' -e 's/"$//')
+instance_dns=$(echo $instance_description | jq -r '.Reservations[0] .Instances[0] .PublicDnsName')
 printf "Instance DNS:\t$instance_dns\n\n"
 
 # add bash alias to ssh into instance 
