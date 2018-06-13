@@ -55,7 +55,7 @@ aws ec2 request-spot-instances --instance-count 1 \
 
 # get instance id, strip quotes from string
 request_id=$(cat $log_file | jq '.SpotInstanceRequests[0] .SpotInstanceRequestId' | sed -e 's/^"//' -e 's/"$//')
-printf "Request $request_id submitted.\n"
+printf "Request submitted. Spot Instance Request ID:\t$request_id\n"
 
 function get_request_state {
     aws ec2 describe-spot-instance-requests \
@@ -81,13 +81,13 @@ while [ $instance_id == "null" ]; do
     done
     instance_id=$(get_instance_id)
 done
-printf "\nRequest fulfilled.\nInstance id:\t$instance_id\n"
+printf "\nRequest fulfilled.\n\nInstance ID:\t$instance_id\n"
 
 # get instance DNS, strip quotes from string
 instance_description=$(aws ec2 describe-instances \
                        --filters Name=instance-id,Values=[$instance_id])
 instance_dns=$(echo $instance_description | jq '.Reservations[0] .Instances[0] .PublicDnsName' | sed -e 's/^"//' -e 's/"$//')
-printf "Instance DNS:\t$instance_dns\n"
+printf "Instance DNS:\t$instance_dns\n\n"
 
 # add bash alias to ssh into instance 
 # TODO: Add option to manage instances by name
@@ -95,4 +95,4 @@ ssh_alias="alias ssh_ec2_${instance_id}='ssh -i $AWS_PRIVATE_KEY ec2-user@${inst
 echo  $ssh_alias >> ~/.aws_manager
 source ~/.bash_profile
 
-printf "SSH into instance with command:\n$ssh_alias\n"
+printf "SSH into instance with command:\n\n\tssh_ec2_${instance_id}\n\n"
