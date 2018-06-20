@@ -1,5 +1,5 @@
 {
-  "ImageId": "ami-bdf289c5",
+  "ImageId": "ami-25eaa85d",
   "KeyName": "ec2_default",
   "SecurityGroupIds": [ "sg-c758e8b6" ],
   "InstanceType": "t2.large",
