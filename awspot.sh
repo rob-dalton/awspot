@@ -8,7 +8,14 @@ die() {
 
 if [ -n "$1" ]; then
     case $1 in
-        ec2) python $AWSPOT_DIR/ec2.py "$@";;
+        ec2)
+            output=$(python $AWSPOT_DIR/ec2.py "$@")
+            if [ $2 == 'ssh' ]; then
+                $output
+            else
+                echo $output
+            fi  
+        ;;
         fleet) echo 'ERROR: Not implemented yet.';;
         *) echo 'ERROR: Invalid command.';;
     esac
