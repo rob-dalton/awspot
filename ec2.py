@@ -44,6 +44,7 @@ if __name__ == "__main__":
     manager = ec2Manager(client)
 
     if args.command == 'launch':
+        # TODO: Add console logging.
         manager.launch_instance(args.name,
                                 args.specification,
                                 args.userdata,
@@ -62,5 +63,5 @@ if __name__ == "__main__":
         print(f"ssh -i {pem_key} {user}@{dns}")
 
     elif args.command == 'terminate':
-        # TODO: Implement command.
-        pass
+        # TODO: Add console logging.
+        manager.terminate(args.name)

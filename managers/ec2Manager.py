@@ -77,9 +77,12 @@ class ec2Manager(Manager):
             if self._get_instance_name(instance) == name:
                 return instance
 
-    def terminate(self, **kwargs):
+    def terminate(self, name):
         """ Terminate resource by name. """
-        raise NotImplementedError
+        instance = self.find_instance_by_name(name)
+        if instance:
+            instance_id = instance['InstanceId']
+            self.client.terminate_instances(InstanceIds=[instance_id])
 
     def _get_instance_name(self, instance):
         """ Get instance name from instance description """
