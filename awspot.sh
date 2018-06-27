@@ -16,7 +16,7 @@ if [ -n "$1" ]; then
                 echo $output
             fi  
         ;;
-        fleet) echo 'ERROR: Not implemented yet.';;
+        fleet) echo 'ERROR: Not implemented yet.';; 
         *) echo 'ERROR: Invalid command.';;
     esac
 shift

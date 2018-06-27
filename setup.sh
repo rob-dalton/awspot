@@ -11,22 +11,6 @@ while :; do
                 die 'ERROR: "-p | --path" requires a non-empty argument.'
             fi
         ;;
-        -au|--aws_user)
-            if [ "$2" ]; then
-                aws_user=$2
-            shift
-            else
-                die 'ERROR: "-au | --aws_user" requires a non-empty argument.'
-            fi
-        ;;
-        -ak|--aws_key)
-            if [ "$2" ]; then
-                aws_key=$2
-            shift
-            else
-                die 'ERROR: "-ak | --aws_key" requires a non-empty argument.'
-            fi
-        ;;
         *) break
     esac
     shift
@@ -43,8 +27,6 @@ cat >> $manager_file <<EOL
 # vars
 export AWSPOT_MANAGER_FILE='$manager_file'
 export AWSPOT_DIR='$awspot_dir_path'
-export AWSPOT_USER='$aws_user'
-export AWSPOT_KEY='$aws_key'
 
 # awspot alias
 alias awspot='bash ${awspot_dir_path}awspot.sh'

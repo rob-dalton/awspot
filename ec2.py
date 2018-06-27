@@ -29,10 +29,14 @@ def parse_args():
                         help='name for instance')
     parser.add_argument('-s', '--specification', type=str,
                         help='path to specification JSON file')
-    parser.add_argument('-u', '--userdata', type=str,
-                        help='optional path to user data shell script')
+    parser.add_argument('-d', '--userdata', type=str,
+                        help='optional path to userdata shell script')
     parser.add_argument('-p', '--price', type=str,
                         help='max bid price for instance')
+    parser.add_argument('-k', '--key_file', type=str,
+                        help='path to .pem file')
+    parser.add_argument('-u', '--user', type=str,
+                        help='user to login as')
 
     return parser.parse_args()
 
@@ -56,13 +60,12 @@ if __name__ == "__main__":
 
     elif args.command == 'ssh':
         # TODO: Add key pair management
-        pem_key = os.environ['AWSPOT_KEY']
-        user = os.environ['AWSPOT_USER']
-
         instance = manager.find_instance_by_name(args.name)
-        dns = instance['PublicDnsName']
+        public_dns = instance['PublicDnsName']
+        key_file = args.key_file
+        user_name = args.user
 
-        print(f"ssh -i {pem_key} {user}@{dns}")
+        print(f"ssh -i {key_file} {user_name}@{public_dns}")
 
     elif args.command == 'terminate':
         # TODO: Add console logging.
