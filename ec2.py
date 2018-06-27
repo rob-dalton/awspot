@@ -9,6 +9,7 @@ import time
 from managers import ec2Manager
 
 def initialize_logging():
+    # TODO: Get logging calls to print to console.
     logging.basicConfig(
         filename="output.log",
         level=logging.DEBUG,
@@ -54,6 +55,7 @@ if __name__ == "__main__":
         manager.list_running_instances()
 
     elif args.command == 'ssh':
+        # TODO: Add key pair management
         pem_key = os.environ['AWSPOT_KEY']
         user = os.environ['AWSPOT_USER']
 

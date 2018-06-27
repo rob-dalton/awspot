@@ -1,28 +1,29 @@
-# EC2 Spot Instance Launcher
-Script to easily launch and configure Amazon AWS EC2 spot instances.
-
-Running the script will request a spot instance with the specifications defined by the passed args. It will also create an alias to ssh into your newly created instance.
+# Awspot: AWS Spot Resource Manager
+Command line utility to easily manage Amazon AWS spot resources.
+\iNOTE: Spot Fleet management not implemented yet. The only available resource type is `ec2`.\i
 
 ## Setup
-- Install and configure `aws_cli`: https://aws.amazon.com/cli/
-- Install `jq`: https://stedolan.github.io/jq/
-- Set the environment variable `$AWS_PRIVATE_KEY` to your desired .pem key file.
-  - You must provide a private key, as the script assumes you're using SSH to access your instance.
-- Add the following to your `.bash_profile`: 
-    ```
-    # Added for aws manager
-    if [ -f ~/.aws_manager ]; then
-       source ~/.aws_manager
-    fi
-    ``` 
+1. Install and configure `aws_cli`: https://aws.amazon.com/cli/
+2. Run `bash ./install.sh -path <path> -aws_key <path-to-pem> -aws_user <path-to-user>`
 
-## Usage
-```bash launch_ec2_spot_instance.sh -s <path-to-spec-file> -u <path-to-startup-script> -p <max-bid-price>``` 
+## Basic Usage
+Commands follow this pattern: `awspot <resource_type> <command> <args>`. 
 
-Args:
+resource_type
+- `ec2`
+- `fleet`
+
+command
+- `launch`
+- `terminate`
+- `list_running`
+- `ssh`
+
+args:
 - `-s | --specifications`: Path to JSON file with launch specifications.
-- `-u | --userdata`: Path to user data bash script (runs on instance boot).
-- `-p | --price`: Max spot instance bid price.
+- `-u | --userdata`: Path to userdata script (runs on instance boot).
+- `-p | --price`: Max spot resource bid price.
+- `-n | --name`: Spot resource name.
 
 ## Learn More
 - Launch specifications: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-request-examples.html
