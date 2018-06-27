@@ -30,22 +30,23 @@ class ec2Manager(Manager):
             SpotPrice=price
         )
         request_id = request['SpotInstanceRequests'][0].get('SpotInstanceRequestId')
+
         if request_id is None:
-            logging.error('Request submission failed.')
+            print('Request submission failed.')
             return False
         else:
-            logging.info(f"Request submitted with id: {request_id}")
+            print(f"Spot instance request submitted. SpotInstanceRequestId: {request_id}")
 
-        # get instance id
+        # check request state every 3 seconds, get instance id when fulfilled
         instance_id = None
         while instance_id is None:
             request_state = self.client.describe_spot_instance_requests(
                 SpotInstanceRequestIds=[request_id]
             )
             instance_id = request_state['SpotInstanceRequests'][0].get('InstanceId')
-            time.sleep(3)
+            time.sleep(1.5)
 
-        logging.info(f"Request fulfilled. InstanceId: {instance_id}")
+        print(f"Spot instance request fulfilled. InstanceId: {instance_id}")
 
         # Add name tag to resource
         self.client.create_tags(
@@ -79,10 +80,18 @@ class ec2Manager(Manager):
 
     def terminate(self, name):
         """ Terminate resource by name. """
+        # TODO: Create fail-safe termination check.
         instance = self.find_instance_by_name(name)
         if instance:
             instance_id = instance['InstanceId']
-            self.client.terminate_instances(InstanceIds=[instance_id])
+            response = self.client.terminate_instances(InstanceIds=[instance_id])
+            if response['TerminatingInstances'] and \
+               response['TerminatingInstances'][0]['InstanceId'] == instance_id:
+                print(f"Instance terminating. Name: {name}, InstanceId: {instance_id}")
+                return True
+
+        return False
+
 
     def _get_instance_name(self, instance):
         """ Get instance name from instance description """

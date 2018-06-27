@@ -9,11 +9,10 @@ die() {
 if [ -n "$1" ]; then
     case $1 in
         ec2)
-            output=$(python $AWSPOT_DIR/ec2.py "$@")
             if [ $2 == 'ssh' ]; then
-                $output
+                $(python $AWSPOT_DIR/ec2.py "$@") 
             else
-                echo $output
+                python $AWSPOT_DIR/ec2.py "$@" 
             fi  
         ;;
         fleet) echo 'ERROR: Not implemented yet.';; 
