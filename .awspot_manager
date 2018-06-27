@@ -1,0 +1,11 @@
+# AWSPOT MANAGER ENV FILE
+# env vars and aliases for awspot manager
+
+# vars
+export AWSPOT_MANAGER_FILE='.awspot_manager'
+export AWSPOT_DIR='/Users/robertdalton/web-projects/awspot-manager/'
+export AWSPOT_USER='ec2-default'
+export AWSPOT_KEY='/Users/robertdalton/.ssh/ec2_default.pem'
+
+# awspot alias
+alias awspot='bash /Users/robertdalton/web-projects/awspot-manager//awspot.sh'

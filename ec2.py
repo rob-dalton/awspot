@@ -52,9 +52,15 @@ if __name__ == "__main__":
     elif args.command == 'list_running':
         manager.list_running_instances()
 
-    elif args.command == 'terminate':
-        # TODO: Implement command.
-        pass
     elif args.command == 'ssh':
+        pem_key = os.environ['AWSPOT_KEY']
+        user = os.environ['AWSPOT_USER']
+
+        instance = manager.find_instance_by_name(args.name)
+        dns = instance['PublicDnsName']
+
+        print(f"ssh -i {pem_key} {user}@{dns}")
+
+    elif args.command == 'terminate':
         # TODO: Implement command.
         pass

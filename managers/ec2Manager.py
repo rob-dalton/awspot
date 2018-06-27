@@ -62,13 +62,20 @@ class ec2Manager(Manager):
         if not instances:
             print("No running instances.")
         else:
-            output = "INSTANCES\n\nid\tname\n\n"
+            output = "\nInstanceId\t\tName\n\n"
             for instance in instances:
                 name = self._get_instance_name(instance)
                 instance_id = instance['InstanceId']
                 output += f"{instance_id}\t{name}\n"
 
             print(output)
+
+    def find_instance_by_name(self, name):
+        """ Lookup resource by name """
+        instances = self._get_running_instances()
+        for instance in instances:
+            if self._get_instance_name(instance) == name:
+                return instance
 
     def terminate(self, **kwargs):
         """ Terminate resource by name. """
@@ -89,6 +96,6 @@ class ec2Manager(Manager):
 
         response = self.client.describe_instances(Filters=filters_list)
         reservations = response.get('Reservations')
-        instances = [*[r.get('Instances') for r in reservations]]
+        instances = [i for r in reservations for i in r.get('Instances')]
 
         return instances
