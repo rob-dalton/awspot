@@ -5,6 +5,8 @@ import os
 import time
 import typing
 
+from typing import List
+
 from .base import Manager
 
 class ec2Manager(Manager):
@@ -13,16 +15,15 @@ class ec2Manager(Manager):
     def launch_instance(self, name: str, launch_spec_file: str,
                         userdata_file: str, price: str):
         """ Launch ec2 spot instance, store information by name. """
-        # TODO: Add name to launch specifications as tag
         # load launch specifications and base64 encoded userdata
         with open(launch_spec_file) as f:
             launch_spec = json.loads(f.read())
-        with open(userdata_file) as f:
-            userdata_str = f.read()
-            userdata_bytes = base64.b64encode(bytes(userdata_str, 'utf-8'))
-            userdata = userdata_bytes.decode('utf-8')
-
-        launch_spec['UserData'] = userdata
+        if userdata_file is not None:
+            with open(userdata_file) as f:
+                userdata_str = f.read()
+                userdata_bytes = base64.b64encode(bytes(userdata_str, 'utf-8'))
+                userdata = userdata_bytes.decode('utf-8')
+                launch_spec['UserData'] = userdata
 
         # request instance
         request = self.client.request_spot_instances(
@@ -35,7 +36,7 @@ class ec2Manager(Manager):
             print('Request submission failed.')
             return False
         else:
-            print(f"Spot instance request submitted. SpotInstanceRequestId: {request_id}")
+            print(f"Spot instance request submitted.\nSpotInstanceRequestId: {request_id}\n")
 
         # check request state every 3 seconds, get instance id when fulfilled
         instance_id = None
@@ -46,7 +47,7 @@ class ec2Manager(Manager):
             instance_id = request_state['SpotInstanceRequests'][0].get('InstanceId')
             time.sleep(1.5)
 
-        print(f"Spot instance request fulfilled. InstanceId: {instance_id}")
+        print(f"Spot instance request fulfilled.\nInstanceId: {instance_id}\n")
 
         # Add name tag to resource
         self.client.create_tags(
@@ -71,14 +72,15 @@ class ec2Manager(Manager):
 
             print(output)
 
-    def find_instance_by_name(self, name):
+    def find_instance_by_name(self, name: str):
         """ Lookup resource by name """
+        # TODO: Handle case where multiple instances have same name
         instances = self._get_running_instances()
         for instance in instances:
             if self._get_instance_name(instance) == name:
                 return instance
 
-    def terminate(self, name):
+    def terminate(self, name: str):
         """ Terminate resource by name. """
         # TODO: Create fail-safe termination check.
         instance = self.find_instance_by_name(name)
@@ -87,20 +89,19 @@ class ec2Manager(Manager):
             response = self.client.terminate_instances(InstanceIds=[instance_id])
             if response['TerminatingInstances'] and \
                response['TerminatingInstances'][0]['InstanceId'] == instance_id:
-                print(f"Instance terminating. Name: {name}, InstanceId: {instance_id}")
+                print(f"Instance terminating.\nName: {name}\nInstanceId: {instance_id}\n")
                 return True
 
         return False
 
-
-    def _get_instance_name(self, instance):
+    def _get_instance_name(self, instance: List)->str:
         """ Get instance name from instance description """
         tags = instance['Tags']
         for tag in tags:
             if tag['Key'] == 'Name':
                 return tag['Value']
 
-    def _get_running_instances(self):
+    def _get_running_instances(self)->List:
         """ Get list of running instances """
         filters = {'instance-lifecycle': ['spot'],
                    'instance-state-name': ['running']}

@@ -18,6 +18,7 @@ def initialize_logging():
 
 def parse_args():
     # NOTE: ec2 is only allowed instance_type
+    # TODO: Break ec2 commands into separate scripts w/separate args
     parser = argparse.ArgumentParser(description='Script to manage ec2 spot instances.')
     parser.add_argument('instance_type', type=str,
                         choices=['ec2'],
@@ -29,7 +30,7 @@ def parse_args():
                         help='name for instance')
     parser.add_argument('-s', '--specification', type=str,
                         help='path to specification JSON file')
-    parser.add_argument('-d', '--userdata', type=str,
+    parser.add_argument('-d', '--userdata', type=str, default=None,
                         help='optional path to userdata shell script')
     parser.add_argument('-p', '--price', type=str,
                         help='max bid price for instance')

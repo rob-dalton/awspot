@@ -109,3 +109,5 @@ instance-requests
 *.swp
 
 tests
+userdata
+launch-specs

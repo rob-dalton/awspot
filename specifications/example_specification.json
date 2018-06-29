@@ -1,9 +1,0 @@
-{
-  "ImageId": "ami-1a2b3c4d",
-  "KeyName": "my-key-pair",
-  "SecurityGroupIds": [ "sg-1a2b3c4d" ],
-  "InstanceType": "m3.medium",
-  "IamInstanceProfile": {
-      "Arn": "arn:aws:iam::123456789012:instance-profile/my-iam-role"
-  }
-}
