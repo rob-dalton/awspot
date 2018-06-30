@@ -1,5 +1,5 @@
 install:
-	bash install.sh
+	python ./install.py
 
 package:
 	tar --exclude='./.git' --exclude='./awspot' --exclude='./specifications' \
