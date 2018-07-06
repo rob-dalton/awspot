@@ -6,7 +6,7 @@ import logging
 import os
 import time
 
-from managers import ec2Manager
+from awspot.managers import ec2Manager
 
 def initialize_logging():
     # TODO: Get logging calls to print to console.

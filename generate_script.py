@@ -26,4 +26,4 @@ fi
 if __name__ == "__main__":
 
     with open('./awspot', 'w') as f:
-        f.write(awspot.format(os.getcwd()))
+        f.write(awspot.format(os.environ['prefix']))
