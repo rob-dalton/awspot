@@ -39,4 +39,4 @@ if __name__ == "__main__":
 
     # write bash script to file
     with open('./awspot', 'w') as f:
-        f.write(awspot.format(args['prefix']))
+        f.write(awspot.format(args.prefix))
