@@ -1,5 +1,5 @@
-install:
-	python ./install.py
+script:
+	python ./generate_script.py
 
 package:
 	tar --exclude='./.git' --exclude='./awspot' --exclude='./specifications' \

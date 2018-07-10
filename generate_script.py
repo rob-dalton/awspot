@@ -1,6 +1,7 @@
 # !/bin/bash python
 
 import os
+import argparse
 
 awspot = """ \
 #!/bin/bash
@@ -23,7 +24,19 @@ else
 fi
 """
 
+def parse_args():
+    # get prefix arg
+    parser = argparse.ArgumentParser(description='Script to manage ec2 spot instances.')
+    parser.add_argument('--prefix', type=str, required=True,
+                        help='Prefix to point to awspot brew install location.')
+
+    return parser.parse_args()
+
 if __name__ == "__main__":
 
+    # setup args
+    args = parse_args()
+
+    # write bash script to file
     with open('./awspot', 'w') as f:
-        f.write(awspot.format(os.getcwd()))
+        f.write(awspot.format(args['prefix']))
