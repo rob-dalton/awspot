@@ -9,14 +9,6 @@ import subprocess
 
 from awspot.managers import ec2Manager
 
-def initialize_logging():
-    # TODO: Get logging calls to print to console.
-    logging.basicConfig(
-        filename="output.log",
-        level=logging.DEBUG,
-        format="%(asctime)s:%(levelname)s:%(message)s"
-    )
-
 def parse_args():
     # NOTE: ec2 is only allowed instance_type
     # TODO: Break ec2 commands into separate scripts w/separate args
@@ -46,7 +38,6 @@ def parse_args():
 #################################################
 # SCRIPT                                        #
 #################################################
-initialize_logging()
 args = parse_args()
 
 client = boto3.client('ec2')
