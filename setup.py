@@ -10,6 +10,7 @@ setup(
     version='0.0.3',
     author='Rob Dalton',
     author_email='rob@robdalton.me',
+    python_requires='>=3.6',
     classifiers=(
         'Programming Language :: Python :: 3.6'
     ),
