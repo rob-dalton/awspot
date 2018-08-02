@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import time
+import subprocess
 
 from awspot.managers import ec2Manager
 
@@ -41,33 +42,36 @@ def parse_args():
 
     return parser.parse_args()
 
-if __name__ == "__main__":
 
-    initialize_logging()
-    args = parse_args()
+#################################################
+# SCRIPT                                        #
+#################################################
+initialize_logging()
+args = parse_args()
 
-    client = boto3.client('ec2')
-    manager = ec2Manager(client)
+client = boto3.client('ec2')
+manager = ec2Manager(client)
 
-    if args.command == 'launch':
-        # TODO: Add console logging.
-        manager.launch_instance(args.name,
-                                args.specification,
-                                args.userdata,
-                                args.price)
+if args.command == 'launch':
+    # TODO: Add console logging.
+    manager.launch_instance(args.name,
+                            args.specification,
+                            args.userdata,
+                            args.price)
 
-    elif args.command == 'list_running':
-        manager.list_running_instances()
+elif args.command == 'list_running':
+    manager.list_running_instances()
 
-    elif args.command == 'ssh':
-        # TODO: Add key pair management
-        instance = manager.find_instance_by_name(args.name)
-        public_dns = instance['PublicDnsName']
-        key_file = args.key_file
-        user_name = args.user
+elif args.command == 'ssh':
+    # TODO: Add key pair management
+    instance = manager.find_instance_by_name(args.name)
+    public_dns = instance['PublicDnsName']
+    key_file = args.key_file
+    user_name = args.user
 
-        print(f"ssh -i {key_file} {user_name}@{public_dns}")
+    subprocess.run(["ssh", "-i", key_file,
+                    f"{user_name}@{public_dns}"])
 
-    elif args.command == 'terminate':
-        # TODO: Add console logging.
-        manager.terminate(args.name)
+elif args.command == 'terminate':
+    # TODO: Add console logging.
+    manager.terminate(args.name)
