@@ -10,7 +10,6 @@ import subprocess
 from awspot.managers import ec2Manager
 
 def parse_args():
-    # NOTE: ec2 is only allowed instance_type
     # TODO: Break ec2 commands into separate scripts w/separate args
     parser = argparse.ArgumentParser(description='Script to manage ec2 spot instances.')
     parser.add_argument('instance_type', type=str,
@@ -31,6 +30,8 @@ def parse_args():
                         help='path to .pem file')
     parser.add_argument('-u', '--user', type=str,
                         help='user to login as')
+    parser.add_argument('-P', '--profile', type=str,
+                        help='AWS profile to use', default='default')
 
     return parser.parse_args()
 
@@ -40,7 +41,8 @@ def parse_args():
 #################################################
 args = parse_args()
 
-client = boto3.client('ec2')
+session = boto3.Session(profile_name=args.profile)
+client = session.client('ec2')
 manager = ec2Manager(client)
 
 if args.command == 'launch':

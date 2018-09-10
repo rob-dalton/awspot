@@ -38,7 +38,7 @@ class ec2Manager(Manager):
         else:
             print(f"Spot instance request submitted.\nSpotInstanceRequestId: {request_id}\n")
 
-        # check request state every 3 seconds, get instance id when fulfilled
+        # check request state every 1.5 seconds, get instance id when fulfilled
         instance_id = None
         while instance_id is None:
             request_state = self.client.describe_spot_instance_requests(
