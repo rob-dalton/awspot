@@ -16,7 +16,8 @@ def parse_args():
                         choices=['ec2'],
                         help='request_type (ec2 or spot fleet)')
     parser.add_argument('command', type=str,
-                        choices=['launch', 'list_running', 'terminate', 'ssh'],
+                        choices=['launch', 'list_running', 'terminate',
+                                 'ssh', 'jupytunnel'],
                         help='action type')
     parser.add_argument('-n', '--name', type=str,
                         help='name for instance')
@@ -63,6 +64,16 @@ elif args.command == 'ssh':
     user_name = args.user
 
     subprocess.run(["ssh", "-i", key_file,
+                    f"{user_name}@{public_dns}"])
+
+elif args.command == 'jupytunnel':
+    instance = manager.find_instance_by_name(args.name)
+    public_dns = instance['PublicDnsName']
+    key_file = args.key_file
+    user_name = args.user
+
+    subprocess.run(["ssh", "-i", key_file,
+                    "-N", "-L", "8000:https://localhost:8888",
                     f"{user_name}@{public_dns}"])
 
 elif args.command == 'terminate':
