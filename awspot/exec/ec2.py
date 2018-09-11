@@ -73,7 +73,7 @@ elif args.command == 'jupytunnel':
     user_name = args.user
 
     subprocess.run(["ssh", "-i", key_file,
-                    "-N", "-L", "8000:https://localhost:8888",
+                    "-N", "-L", "8000:localhost:8888",
                     f"{user_name}@{public_dns}"])
 
 elif args.command == 'terminate':
