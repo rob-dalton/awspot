@@ -10,8 +10,7 @@ if __name__ == "__main__":
     # determine script to call (ec2.py)
     if resource_type == "ec2":
         import awspot.exec.ec2
-    elif resource_type == "fleet":
-        # TODO: Implement spot fleet script.
-        pass
+    elif resource_type == "emr":
+        import awspot.exec.emr
     else:
         print("ERROR: No resource type specified") 
