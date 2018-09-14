@@ -28,6 +28,8 @@ def parse_args():
                         help='user to login as')
     parser.add_argument('-P', '--profile', type=str,
                         help='AWS profile to use', default='default')
+    parser.add_argument('--port', type=int,
+                        help='host port to connect to', default=8888)
 
     return parser.parse_args()
 
@@ -63,7 +65,7 @@ elif args.command == 'jupytunnel':
     user_name = args.user
 
     subprocess.run(["ssh", "-i", key_file,
-                    "-N", "-L", "8000:localhost:8888",
+                    "-N", "-L", f"8000:localhost:{args.port}",
                     f"{user_name}@{public_dns}"])
 
 elif args.command == 'terminate':
