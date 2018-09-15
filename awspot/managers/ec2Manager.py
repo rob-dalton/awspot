@@ -36,27 +36,41 @@ class ec2Manager(Manager):
             print('Request submission failed.')
             return False
         else:
-            print(f"Spot instance request submitted.\nSpotInstanceRequestId: {request_id}\n")
+            print(f"\nSpot instance request submitted.\nSpotInstanceRequestId: {request_id}\n")
 
         # check request state every 1.5 seconds, get instance id when fulfilled
-        instance_id = None
-        while instance_id is None:
+        holding = ['pending-evaluation','not-scheduled-yet',
+                   'pending-fulfillment']
+        request_status = 'pending-evaluation'
+        while request_status in holding:
             request_state = self.client.describe_spot_instance_requests(
                 SpotInstanceRequestIds=[request_id]
-            )
-            instance_id = request_state['SpotInstanceRequests'][0].get('InstanceId')
+            )['SpotInstanceRequests'][0]
+
+            request_status = request_state['Status'].get('Code')
             time.sleep(1.5)
 
-        print(f"Spot instance request fulfilled.\nInstanceId: {instance_id}\n")
+        # handle successful fulfillment
+        if request_status == 'fulfilled':
+            instance_id = request_state.get('InstanceId')
+            print(f"Spot instance request fulfilled.\nInstanceId: {instance_id}\n")
+            # Add name tag to resource
+            self.client.create_tags(
+                Resources=[instance_id],
+                Tags=[{'Key': 'Name',
+                       'Value': name}]
+            )
 
-        # Add name tag to resource
-        self.client.create_tags(
-            Resources=[instance_id],
-            Tags=[{'Key': 'Name',
-                   'Value': name}]
-        )
+            return True
 
-        return True
+        # handle failed fulfillment
+        else:
+            self.client.cancel_spot_instance_requests(
+                SpotInstanceRequestIds=[request_id]
+            )
+            print(f"Spot instance request cancelled.\nReason: {request_status}\n")
+
+            return False
 
     def list_running_instances(self):
         """ List active instances of resource. """
