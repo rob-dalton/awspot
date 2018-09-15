@@ -1,6 +1,6 @@
 # Awspot: AWS Spot Resource Manager
 Command line utility to easily manage Amazon AWS spot resources.
-*NOTE: Spot Fleet management not implemented yet. The only available resource type is `ec2`.*
+*NOTE: Spot fleet management not implemented yet. EMR management partially implement. The only fully available resource type is `ec2`.*
 
 ## Setup
 1. Install and configure `aws_cli`: https://aws.amazon.com/cli/
