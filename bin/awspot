@@ -13,4 +13,4 @@ if __name__ == "__main__":
     elif resource_type == "emr":
         import awspot.exec.emr
     else:
-        print("ERROR: No resource type specified") 
+        print("ERROR: Invalid resource type specified") 

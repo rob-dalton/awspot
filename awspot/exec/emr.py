@@ -26,13 +26,18 @@ def parse_args():
                         help='path to .pem file')
     parser.add_argument('-u', '--user', type=str,
                         help='user to login as')
+    parser.add_argument('-U', '--uniform', type=bool, default=True,
+                        help='Use uniform pricing for cluster instances.')
     parser.add_argument('-P', '--profile', type=str,
                         help='AWS profile to use', default='default')
     parser.add_argument('--port', type=int,
                         help='host port to connect to', default=8888)
+    parser.add_argument('-S', '--script', type=str,
+                        help='path to aws cli launch script')
+    parser.add_argument('--setup_profile', type=str, choices=['y', 'n'],
+                        default='n', help='configure ssh profile')
 
     return parser.parse_args()
-
 
 #################################################
 # SCRIPT                                        #
@@ -44,20 +49,31 @@ client = session.client('emr')
 manager = emrManager(client)
 
 if args.command == 'launch':
-    raise NotImplementedError
+    # TODO: Expand functionality.
+    response = manager.launch_cluster(launch_script=args.script,
+                                      uniform=args.uniform, price=args.price,
+                                      name=args.name)
+    if 'ClusterId' in response:
+        print(f"Cluster launched with ClusterId: {response['CluserId']}")
+    else:
+        print("ERROR: Cluster not launched.")
 
 elif args.command == 'list_active_clusters':
     output = manager.list_active_clusters()
     print(output)
 
 elif args.command == 'ssh':
-    # TODO: Add key pair management
     public_dns = manager.find_master_dns_by_name(args.name)
     key_file = args.key_file
     user_name = args.user
 
-    subprocess.run(["ssh", "-i", key_file,
-                    f"{user_name}@{public_dns}"])
+    if args.setup_profile == 'n':
+        # if profile does not exist
+        subprocess.run(["ssh", "-i", key_file,
+                        f"{user_name}@{public_dns}"])
+    else:
+        manager.ssh_profile(name=args.name, user=user_name, action='add',
+                            identity_file=key_file, public_dns=public_dns)
 
 elif args.command == 'jupytunnel':
     public_dns = manager.find_master_dns_by_name(args.name)

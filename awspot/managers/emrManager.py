@@ -1,5 +1,7 @@
 import datetime
+import json
 import logging
+import subprocess
 import typing
 
 from typing import List
@@ -9,10 +11,15 @@ from .base import Manager
 class emrManager(Manager):
     """ Class for managing emr spot fleets. """
 
-    def launch_cluster(self, name: str, launch_spec_file: str,
-                        userdata_file: str, price: str):
+    def launch_cluster(self, name: str, launch_script: str = None,
+                       uniform=True, price: str = "0.05"):
         """ Launch emr cluster """
-        raise NotImplementedError
+        if launch_script is not None:
+            response = subprocess.run(['bash', launch_script],
+                                      stdout=subprocess.PIPE).stdout.decode('utf-8')
+            return json.loads(response)
+        else:
+            raise NotImplementedError
 
     def list_active_clusters(self):
         """ List active instances of resource. """
