@@ -43,7 +43,7 @@ class TestEc2Manager(TestCase):
         
     def test_launch(self):
         args = [
-            'awspot', 'ec2', 'launch',
+            'ec2', 'launch',
             '-n', 'test',
             '-s', './assets/ec2_launch_specs.json',
             '-u', './assets/ec2_userdata.sh',
@@ -55,7 +55,7 @@ class TestEc2Manager(TestCase):
 
     def test_terminate(self):
         args = [
-            'awspot', 'ec2', 'terminate',
+            'ec2', 'terminate',
             '-n', 'test'
         ]
         manager = ec2Manager(self.session, get_base_argparser(), args)
