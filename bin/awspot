@@ -1,16 +1,22 @@
 #!/usr/bin/env python
+import argparse
+import boto3
 import sys
 
-if __name__ == "__main__":
-    try:
-        resource_type = sys.argv[1]
-    except:
-        print("ERROR: No resource type specified")
+from awspot.etc import get_base_argparser
 
-    # determine script to call (ec2.py)
-    if resource_type == "ec2":
-        import awspot.exec.ec2
-    elif resource_type == "emr":
-        import awspot.exec.emr
-    else:
-        print("ERROR: Invalid resource type specified") 
+if __name__ == "__main__":
+
+    parser = get_base_argparser()
+    args = parser.parse_args()
+    session = boto3.Session(profile_name=args.profile)
+
+    if args.resource_type == "ec2":
+        from awspot.managers import ec2Manager
+        manager = ec2Manager(session, parser, sys.argv)
+    elif args.resource_type == "emr":
+        from awspot.managers import emrManager
+        manager = emrManager(session, parser, sys.argv)
+
+    # execute action using args in sys.argv
+    manager.execute(args.action)

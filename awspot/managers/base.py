@@ -1,13 +1,17 @@
 import json
 import typing
 
-from os.path import expanduser
-
 class Manager(object):
     """ Base class for spot resource managers."""
 
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, session, parser, args):
+        self.client = self._initialize_client(session)
+        self.parser = parser
+        self.args = args
+
+    def _initialize_client(self, session):
+        """ Initialize client for resource """
+        raise NotImplementedError
 
     def launch(self, **kwargs):
         """ Launch resource. """
@@ -21,17 +25,6 @@ class Manager(object):
         """ Terminate resource by name. """
         raise NotImplementedError
 
-    def ssh_profile(self, name: str, public_dns: str, user: str,
-                     identity_file: str, action: str='add'):
-        """ Add profile to ssh config file. """
-        config_path = expanduser("~") + "/.awspot/ssh_config"
-        profile = f"\nHost {name}\n  HostName {public_dns}\n  User {user}"
-        profile += f"\n  IdentityFile {identity_file}\n  ForwardAgent yes"
-        if action=='add':
-            with open(config_path, 'a') as f:
-                f.write(profile)
-        elif action=='remove':
-            #TODO: Add removal procedure
-            pass
-        else:
-            raise ValueError(f'{action} is not a valid value for action.')
+    def execute(self):
+        """ Execute appropriate action """
+        raise NotImplementedError

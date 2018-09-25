@@ -1,8 +1,10 @@
 import boto3
+import sys
 
 from unittest import TestCase
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
+from awspot.etc import get_base_argparser
 from awspot.managers import ec2Manager
 
 class TestEc2Manager(TestCase):
@@ -14,7 +16,7 @@ class TestEc2Manager(TestCase):
             'SpotInstanceRequests': [{'SpotInstanceRequestId': 'sir-fa789d54'}]
         },
         'describe_spot_instance_requests.return_value': {
-            'SpotInstanceRequests': [{'InstanceId': 'i-0578da97c8ee56262'}]
+            'SpotInstanceRequests': [{'InstanceId': 'i-0578da97c8ee56262', 'Status': {'Code': 'fulfilled'}}]
         },
         'describe_instances.return_value': {
             'Reservations': [{
@@ -34,18 +36,28 @@ class TestEc2Manager(TestCase):
         mock_client = Mock()
         mock_client.configure_mock(**cls.MOCK_CLIENT_ATTRS)
 
-        cls.manager = ec2Manager(mock_client)
-        cls.launch_specs = './assets/ec2_launch_specs.json'
-        cls.userdata = './assets/ec2_userdata.sh'
-        cls.price = '0.070'
+        mock_session = Mock()
+        mock_session.configure_mock(**{'client.return_value': mock_client})
 
+        cls.session = mock_session
+        
     def test_launch(self):
-        result = self.manager.launch_instance('test',
-                                              self.launch_specs,
-                                              self.userdata,
-                                              self.price)
-        self.assertTrue(result)
+        args = [
+            'awspot', 'ec2', 'launch',
+            '-n', 'test',
+            '-s', './assets/ec2_launch_specs.json',
+            '-u', './assets/ec2_userdata.sh',
+            '-p', '0.070'
+        ]
+        manager = ec2Manager(self.session, get_base_argparser(), args)
+        ret = manager.execute('launch')
+        self.assertTrue(ret) 
 
     def test_terminate(self):
-        result = self.manager.terminate('test')
-        self.assertTrue(result)
+        args = [
+            'awspot', 'ec2', 'terminate',
+            '-n', 'test'
+        ]
+        manager = ec2Manager(self.session, get_base_argparser(), args)
+        ret = manager.execute('terminate')
+        self.assertTrue(ret)
