@@ -1,7 +1,9 @@
 <img src="https://github.com/rob-dalton/rob-dalton.github.io/blob/master/images/awspot/awspot_logo.png" alt="awspot-logo" width="420">
 <hr>
-Command line utility to easily manage Amazon AWS spot resources.
-*NOTE: The only available resource type is `ec2`. Spot fleet and EMR management are in progress.*
+Command line utility to intuitively manage Amazon AWS spot resources. *NOTE: The only available resource type is EC2. Spot fleet and EMR management are in progress.*
+<br>
+
+![awspot_example](https://raw.githubusercontent.com/rob-dalton/rob-dalton.github.io/master/images/awspot/awspot_launch_example.gif)
 
 ## Setup
 1. [Install and configure awscli.](https://aws.amazon.com/cli/)

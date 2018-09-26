@@ -7,7 +7,7 @@ def readme():
 
 setup(
     name='AWSpot',
-    version='0.0.6',
+    version='0.0.5',
     author='Rob Dalton',
     author_email='rob@robdalton.me',
     python_requires='>=3.6',
