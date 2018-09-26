@@ -1,6 +1,4 @@
-<img src="https://github.com/rob-dalton/rob-dalton.github.io/blob/master/images/awspot/awspot_logo_v1.png" width="320" alt="awspot-logo">
-
-# AWS Spot Resource Manager
+# AWSpot - AWS Spot Resource Manager
 Command line utility to easily manage Amazon AWS spot resources.
 *NOTE: The only available resource type is `ec2`. Spot fleet and EMR management are in progress.*
 
