@@ -12,8 +12,7 @@ class TestEmrManager(TestCase):
             'Clusters': [{'Id': 'j-323SIFSG3JICT',
                           'Name': 'awspot-emr-test'}]
         },
-        'describe_cluster.return_value':
-        read_response('./assets/responses/emr_describe_cluster_response.json')
+        'describe_cluster.return_value': read_response('./assets/responses/emr_describe_cluster_response.json')
     }
 
     @classmethod

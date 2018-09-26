@@ -1,23 +1,24 @@
-# Awspot: AWS Spot Resource Manager
+![AWSpot Logo](https://github.com/rob-dalton/rob-dalton.github.io/blob/master/images/awspot/awspot_logo_v1.png)
+
+# AWS Spot Resource Manager
 Command line utility to easily manage Amazon AWS spot resources.
-*NOTE: Spot fleet management not implemented yet. EMR management partially implement. The only fully available resource type is `ec2`.*
+*NOTE: Spot fleet management not implemented yet. EMR management partially implemented. The only fully available resource type is `ec2`.*
 
 ## Setup
 1. Install and configure `aws_cli`: https://aws.amazon.com/cli/
-2. Add [this repo](https://github.com/rob-dalton/homebrew-tap) as a homebrew tap: `brew tap rob-dalton/homebrew-tap`
-3. Run `brew install awspot`
+2. Run `pip install awspot`
 
 ## Basic Usage
 Commands follow this pattern: `awspot <resource_type> <command> <args>`. 
 
 resource_type
 - `ec2`
-- `fleet`
+- `emr`
 
 command
 - `launch`
 - `terminate`
-- `list_running`
+- `list_active`
 - `ssh`
 
 args:
