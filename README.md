@@ -4,7 +4,7 @@ Command line utility to easily manage Amazon AWS spot resources.
 *NOTE: The only available resource type is `ec2`. Spot fleet and EMR management are in progress.*
 
 ## Setup
-1. Install and configure `aws_cli`: https://aws.amazon.com/cli/
+1. [Install and configure awscli.](https://aws.amazon.com/cli/)
 2. Run `pip install awspot`
 
 ## Usage

@@ -42,7 +42,7 @@ awspot ec2 terminate -n myproject
 It's as simple as that!
 
 ## Setup
-1. Install and configure `aws_cli`: https://aws.amazon.com/cli/
+1. [Install and configure awscli.](https://aws.amazon.com/cli/)
 2. Run `pip install awspot`
 
 ## Usage
