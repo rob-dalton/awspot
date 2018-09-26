@@ -1,4 +1,4 @@
 theme: jekyll-theme-minimal
 title: AWSpot
 description: A utility to simplify AWS spot resource management.
-logo: https://github.com/rob-dalton/rob-dalton.github.io/blob/master/images/awspot/awspot_logo.png
+logo: https://raw.githubusercontent.com/rob-dalton/rob-dalton.github.io/master/images/awspot/awspot_logo.png
