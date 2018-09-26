@@ -7,7 +7,7 @@ def readme():
 
 setup(
     name='AWSpot',
-    version='0.0.4',
+    version='0.0.6',
     author='Rob Dalton',
     author_email='rob@robdalton.me',
     python_requires='>=3.6',
@@ -19,7 +19,7 @@ setup(
     url='http://pypi.python.org/pypi/AWSpot/',
     license='LICENSE',
     description='Utility for managing AWS spot resources.',
-    long_description=open('README').read(),
+    long_description=open('README.md').read(),
     install_requires=[
         "boto3 >= 1.7.24"
     ],

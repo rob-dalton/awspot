@@ -15,8 +15,7 @@ if __name__ == "__main__":
         from awspot.managers import ec2Manager
         manager = ec2Manager(session, parser, sys.argv[1:])
     elif args.resource_type == "emr":
-        from awspot.managers import emrManager
-        manager = emrManager(session, parser, sys.argv[1:])
+        raise NotImplementedError 
 
     # execute action using args in sys.argv
     manager.execute(args.action)
