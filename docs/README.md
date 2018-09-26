@@ -1,4 +1,4 @@
-![AWSpot Logo](https://github.com/rob-dalton/rob-dalton.github.io/blob/master/images/awspot/awspot_logo_v1.png)
+<img src="https://github.com/rob-dalton/rob-dalton.github.io/blob/master/images/awspot/awspot_logo_v1.png" alt="awspot-logo" width="420">
 
 # AWS Spot Resource Manager
 Command line utility to easily manage Amazon AWS spot resources.
